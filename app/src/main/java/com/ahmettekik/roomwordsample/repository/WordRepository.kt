@@ -6,7 +6,7 @@ import com.ahmettekik.roomwordsample.database.WordRoomDatabase
 import kotlinx.coroutines.experimental.async
 
 class WordRepository(application: Application) {
-    private val wordDao = WordRoomDatabase.getDatabase(application)?.WordDao()
+    private val wordDao = WordRoomDatabase.getDatabase(application)?.wordDao()
     val allWords = wordDao?.getAllWords()
 
     fun insert(word: Word) {
