@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -19,7 +20,6 @@ import kotlinx.android.synthetic.main.content_main.*
 private const val NEW_WORD_ACTIVITY_REQUEST_CODE = 1
 
 class MainActivity : AppCompatActivity() {
-    private var wordList = mutableListOf<Word>()
     private lateinit var wordViewModel: WordViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        recyclerview.adapter = WordListAdapter(wordList)
+        recyclerview.setHasFixedSize(true)
+        recyclerview.adapter = WordListAdapter()
         recyclerview.layoutManager = LinearLayoutManager(this)
 
         fab.setOnClickListener { _ ->
@@ -37,8 +38,8 @@ class MainActivity : AppCompatActivity() {
 
         wordViewModel = ViewModelProviders.of(this).get(WordViewModel::class.java)
         wordViewModel.allWords?.observe(this, Observer<List<Word>> {
-            wordList.clear()
-            wordList.addAll(ArrayList<Word>(it))
+            Log.e(MainActivity::class.java.simpleName, it.toString())
+            (recyclerview.adapter as WordListAdapter).words = it?.toMutableList()!!
             recyclerview.adapter.notifyDataSetChanged()
         })
     }

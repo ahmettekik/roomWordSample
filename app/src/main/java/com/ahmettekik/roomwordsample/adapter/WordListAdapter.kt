@@ -10,7 +10,8 @@ import kotlinx.android.synthetic.main.recyclerview_item.view.*
 
 class WordViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-class WordListAdapter(private var words: List<Word>) : RecyclerView.Adapter<WordViewHolder>() {
+class WordListAdapter : RecyclerView.Adapter<WordViewHolder>() {
+    internal var words: MutableList<Word> = mutableListOf()
     override fun getItemCount() = words.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
