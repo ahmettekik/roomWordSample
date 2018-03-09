@@ -1,23 +1,58 @@
 package com.ahmettekik.roomwordsample
 
+import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-
+import android.widget.Toast
+import com.ahmettekik.roomwordsample.adapter.WordListAdapter
+import com.ahmettekik.roomwordsample.database.Word
+import com.ahmettekik.roomwordsample.viewmodel.WordViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
+
+private const val NEW_WORD_ACTIVITY_REQUEST_CODE = 1
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var wordViewModel: WordViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        recyclerview.setHasFixedSize(true)
+        recyclerview.adapter = WordListAdapter()
+        recyclerview.layoutManager = LinearLayoutManager(this)
+
+        fab.setOnClickListener { _ ->
+            val intent = Intent(this, NewWordActivity::class.java)
+            startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE)
+        }
+
+        wordViewModel = ViewModelProviders.of(this).get(WordViewModel::class.java)
+        wordViewModel.allWords?.observe(this, Observer<List<Word>> {
+            Log.e(MainActivity::class.java.simpleName, it.toString())
+            (recyclerview.adapter as WordListAdapter).words = it?.toMutableList()!!
+            recyclerview.adapter.notifyDataSetChanged()
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE &&
+                resultCode == Activity.RESULT_OK && data != null) {
+            val word = Word(data.getStringExtra(EXTRA_REPLY))
+            wordViewModel.insert(word)
+        } else {
+            Toast.makeText(applicationContext, R.string.empty_not_saved, Toast.LENGTH_LONG).show()
         }
     }
 

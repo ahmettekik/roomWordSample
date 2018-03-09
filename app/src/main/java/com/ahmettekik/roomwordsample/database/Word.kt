@@ -4,7 +4,9 @@ import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 
 @Entity(tableName = "word_table")
-data class Word(@PrimaryKey var word: String)
+data class Word(@PrimaryKey @ColumnInfo(name = "word") var word: String) {
+    constructor(): this("")
+}
 
 @Dao
 interface WordDao {
