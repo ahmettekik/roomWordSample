@@ -2,8 +2,8 @@ package com.ahmettekik.roomwordsample
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import kotlinx.android.synthetic.main.activity_new_word.*
 
@@ -17,7 +17,8 @@ class NewWordActivity : AppCompatActivity() {
 
         button_save.setOnClickListener {
             val replyIntent = Intent()
-            if (TextUtils.isEmpty(et_word.text)) {
+            val isEmpty = TextUtils.isEmpty(et_word.text.trim())
+            if (isEmpty) {
                 setResult(Activity.RESULT_CANCELED, replyIntent)
             } else {
                 val word = et_word.text.toString()

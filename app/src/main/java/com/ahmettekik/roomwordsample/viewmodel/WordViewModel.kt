@@ -7,7 +7,7 @@ import com.ahmettekik.roomwordsample.repository.WordRepository
 
 class WordViewModel(application: Application): AndroidViewModel(application) {
     private val repository = WordRepository(application)
-    val allWords = repository.allWords
+    val allWords = repository.getAllWords()
 
     fun insert(word: Word) {
         repository.insert(word)
